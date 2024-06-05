@@ -5,6 +5,10 @@ class UserController extends Controller
     public function register()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (!CSRF::validateToken($_POST['csrf_token'])) {
+                die("CSRF token validation failed");
+            }
+
             $username = Validation::sanitize($_POST['username']);
             $password = Validation::sanitize($_POST['password']);
 
@@ -32,13 +36,17 @@ class UserController extends Controller
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (!CSRF::validateToken($_POST['csrf_token'])) {
+                die("CSRF token validation failed");
+            }
+
             $username = Validation::sanitize($_POST['username']);
             $password = Validation::sanitize($_POST['password']);
 
             $userModel = $this->model('UserModel');
             $user = $userModel->login($username, $password);
 
-            if ($user && password_verify($password, $user['password'])) {
+            if ($user && password_verify($password, $user->password)) {
                 session_start();
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
