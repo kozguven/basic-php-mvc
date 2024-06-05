@@ -1,14 +1,13 @@
 <?php
 
-class HomeModel extends Model
+use Illuminate\Database\Eloquent\Model as Eloquent;
+
+class HomeModel extends Eloquent
 {
+    protected $table = 'messages';
+
     public function getData()
     {
-        $query = 'SELECT message FROM messages WHERE id = 1';
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        return $result;
+        return $this->first();
     }
 }

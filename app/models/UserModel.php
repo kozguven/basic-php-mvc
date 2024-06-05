@@ -1,25 +1,27 @@
 <?php
 
-class UserModel extends Model
+use Illuminate\Database\Eloquent\Model as Eloquent;
+
+class UserModel extends Eloquent
 {
+    protected $table = 'users';
+    protected $fillable = ['username', 'password'];
+
+    public $timestamps = false;
+
     public function register($username, $password)
     {
-        $query = 'INSERT INTO users (username, password) VALUES (:username, :password)';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $password);
-        $stmt->execute();
+        return $this->create([
+            'username' => $username,
+            'password' => $password,
+        ]);
     }
 
     public function login($username, $password)
     {
-        $query = 'SELECT * FROM users WHERE username = :username';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':username', $username);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $this->where('username', $username)->first();
 
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && password_verify($password, $user->password)) {
             return $user;
         }
 
@@ -28,10 +30,6 @@ class UserModel extends Model
 
     public function getUserById($id)
     {
-        $query = 'SELECT * FROM users WHERE id = :id';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $this->find($id);
     }
 }

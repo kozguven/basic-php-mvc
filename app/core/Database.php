@@ -1,24 +1,23 @@
 <?php
 
-class Database
-{
-    private $host = 'localhost';
-    private $db_name = 'your_database';
-    private $username = 'your_username';
-    private $password = 'your_password';
-    private $conn;
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Dotenv\Dotenv;
 
-    public function connect()
-    {
-        $this->conn = null;
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->load();
 
-        try {
-            $this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->db_name, $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            echo 'Connection Error: ' . $e->getMessage();
-        }
+$capsule = new Capsule;
 
-        return $this->conn;
-    }
-}
+$capsule->addConnection([
+    'driver'    => $_ENV['DB_CONNECTION'],
+    'host'      => $_ENV['DB_HOST'],
+    'database'  => $_ENV['DB_DATABASE'],
+    'username'  => $_ENV['DB_USERNAME'],
+    'password'  => $_ENV['DB_PASSWORD'],
+    'charset'   => 'utf8',
+    'collation' => 'utf8_unicode_ci',
+    'prefix'    => '',
+]);
+
+$capsule->setAsGlobal();
+$capsule->bootEloquent();
