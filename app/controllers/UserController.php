@@ -5,11 +5,23 @@ class UserController extends Controller
     public function register()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $username = $_POST['username'];
-            $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+            $username = Validation::sanitize($_POST['username']);
+            $password = Validation::sanitize($_POST['password']);
+
+            if (!Validation::validateUsername($username)) {
+                echo "Invalid username. It should be 3-20 characters long and can contain letters, numbers, and underscores.";
+                return;
+            }
+
+            if (!Validation::validatePassword($password)) {
+                echo "Invalid password. It should be at least 6 characters long.";
+                return;
+            }
+
+            $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
             $userModel = $this->model('UserModel');
-            $userModel->register($username, $password);
+            $userModel->register($username, $passwordHash);
 
             header('Location: /login');
         } else {
@@ -20,13 +32,13 @@ class UserController extends Controller
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $username = $_POST['username'];
-            $password = $_POST['password'];
+            $username = Validation::sanitize($_POST['username']);
+            $password = Validation::sanitize($_POST['password']);
 
             $userModel = $this->model('UserModel');
             $user = $userModel->login($username, $password);
 
-            if ($user) {
+            if ($user && password_verify($password, $user['password'])) {
                 session_start();
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
