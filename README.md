@@ -14,7 +14,7 @@ A simple PHP MVC (Model-View-Controller) framework demonstrating the basic princ
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/basic-mvc-php.git
+    git clone https://github.com/kozguven/basic-mvc-php.git
     ```
 
 2. Navigate to the project directory:
