@@ -46,4 +46,18 @@ class UserController extends Controller
         session_destroy();
         header('Location: /login');
     }
+
+    public function profile($id)
+    {
+        session_start();
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit();
+        }
+
+        $userModel = $this->model('UserModel');
+        $user = $userModel->getUserById($id);
+
+        $this->view('profile', ['user' => $user]);
+    }
 }
