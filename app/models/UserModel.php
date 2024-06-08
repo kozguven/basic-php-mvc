@@ -11,9 +11,11 @@ class UserModel extends Eloquent
 
     public function register($username, $password)
     {
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
         return $this->create([
             'username' => $username,
-            'password' => $password,
+            'password' => $hashedPassword,
         ]);
     }
 

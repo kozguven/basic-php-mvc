@@ -2,13 +2,16 @@
 
 class Controller
 {
+    protected $blade;
+
+    public function __construct()
+    {
+        $this->blade = require_once '../app/config/blade.php';
+    }
+
     public function view($view, $data = [])
     {
-        if (file_exists('../app/views/' . $view . '.php')) {
-            require_once '../app/views/' . $view . '.php';
-        } else {
-            echo "View $view not found";
-        }
+        echo $this->blade->render($view, $data);
     }
 
     public function model($model)
