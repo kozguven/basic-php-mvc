@@ -3,9 +3,9 @@
 require_once '../vendor/autoload.php';
 require_once '../app/core/Router.php';
 require_once '../app/core/Controller.php';
-require_once '../app/core/Model.php';
 require_once '../app/core/Validation.php';
 require_once '../app/core/database.php';
+
 
 session_start();
 

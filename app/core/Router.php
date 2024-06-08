@@ -4,7 +4,14 @@ class Router
 {
     protected $routes = [];
 
-    public function add($route, $params = [])
+    /**
+     * Adds a new route to the router with the given route and parameters.
+     *
+     * @param string $route The route to be added.
+     * @param array $params The parameters associated with the route. Default is an empty array.
+     * @return void
+     */
+    public function add($route, $params = []): void
     {
         // Convert the route to a regular expression: escape forward slashes
         $route = preg_replace('/\//', '\\/', $route);
@@ -16,8 +23,13 @@ class Router
         $route = '/^' . $route . '$/i';
         $this->routes[$route] = $params;
     }
-
-    public function dispatch($url)
+    /**
+     * Dispatches the given URL to the appropriate controller and action.
+     *
+     * @param string $url The URL to be dispatched.
+     * @return void
+     */
+    public function dispatch($url): void
     {
         $url = $this->removeQueryStringVariables($url);
 
@@ -35,8 +47,16 @@ class Router
 
         echo "No route matched.";
     }
-
-    protected function executeController($params)
+    /**
+     * Executes the controller and action specified in the given parameters.
+     *
+     * @param array $params An associative array containing the controller and action names.
+     *                      The keys should be 'controller' and 'action', respectively.
+     *                      The 'action' key is optional, and if not provided, the default action is 'index'.
+     * @throws None
+     * @return void
+     */
+    protected function executeController($params): void
     {
         $controllerName = ucfirst($params['controller']) . 'Controller';
         $methodName = $params['action'] ?? 'index';
@@ -55,8 +75,13 @@ class Router
             echo "Controller $controllerName not found";
         }
     }
-
-    protected function removeQueryStringVariables($url)
+    /**
+     * Removes the query string variables from the given URL.
+     *
+     * @param string $url The URL from which to remove the query string variables.
+     * @return string The URL with the query string variables removed.
+     */
+    protected function removeQueryStringVariables($url): string
     {
         if ($url != '') {
             $parts = explode('&', $url, 2);
